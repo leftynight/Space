@@ -92,7 +92,7 @@ class SpaceGame(Microgame):
         # TODO: Initialization code here
         self.spaceship = SpaceshipSprite()
         self.bg = Background()
-        self.sprites = Group(self.spaceship, self.bg())
+        self.sprites = Group(self.spaceship, self.bg
 
     def start(self):
         # TODO: Startup code here
