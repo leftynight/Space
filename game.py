@@ -37,7 +37,7 @@ def thumbnail():
 def hint():
     # TODO: Return the hint string for your game.
     #raise NotImplementedError("hint")
-    return "Fly the spaceship to the planet"
+    return "Fly the spaceship to the planet!"
 ################################################################################
 
 def _load_image(name, x, y):
@@ -72,14 +72,13 @@ class SpaceshipSprite(Sprite):
     def update(self):
         self.rect.x += self.x_velocity
 
-BG_VELOCITY = 1
+BG_VELOCITY = 2
 class Background(Sprite):
     def __init__(self):
         Sprite.__init__(self)
         bgPath =  join('games','space', 'images', 'space.png')
-        self.image, self.rect = _load_image(bgPath, 0, 0)
-        self.rect  = self.image.get_rect()
-
+        self.image, self.rect = _load_image(bgPath, 0, -1152)
+    
     def update(self):
         self.rect = self.rect.move(0, BG_VELOCITY)
 
@@ -92,7 +91,7 @@ class SpaceGame(Microgame):
         # TODO: Initialization code here
         self.spaceship = SpaceshipSprite()
         self.bg = Background()
-        self.sprites = Group(self.spaceship, self.bg)
+        self.sprites = Group(self.bg, self.spaceship)
 
     def start(self):
         # TODO: Startup code here
