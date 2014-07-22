@@ -71,7 +71,7 @@ class SpaceshipSprite(Sprite):
 
     def update(self):
         self.rect.x += self.x_velocity
-        
+
 BG_VELOCITY = 1
 class Background(Sprite):
     def __init__(self):
@@ -111,17 +111,23 @@ class SpaceGame(Microgame):
         x_ship_right, _ = self.spaceship.rect.bottomright
         if x_ship_left <= 0:
             self.spaceship.x_velocity = 0
-        elif x_ship_right >= 1024:
+        elif x_ship_right >= 1010:
             self.spaceship.x_velocity = 0   
 
         #Process user input
         for event in events:
             if event.type == KEYDOWN and event.key == K_LEFT:
-                self.spaceship.x_velocity -= VELOCITY_INC
+                if x_ship_left <= 0:
+                    pass
+                else:
+                    self.spaceship.x_velocity -= VELOCITY_INC
             elif event.type == KEYUP and event.key == K_LEFT:
                 self.spaceship.x_velocity = 0
             elif event.type == KEYDOWN and event.key == K_RIGHT:
-                self.spaceship.x_velocity += VELOCITY_INC
+                if x_ship_right >= 1010:
+                    pass
+                else:
+                    self.spaceship.x_velocity += VELOCITY_INC
             elif event.type == KEYUP and event.key == K_RIGHT:
                 self.spaceship.x_velocity = 0
 
