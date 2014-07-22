@@ -92,6 +92,17 @@ class Planet(Sprite):
     def update(self):
         self.rect = self.rect.move(0, BG_VELOCITY)
 
+class Asteroid(Sprite):
+    def __init__(self, x, y):
+        Sprite.__init__(self)
+        astPath =  join('games','space', 'images', 'asteroid.png')
+        self.image, self.rect = _load_image(astPath, x, y)
+        self.x_velocity = randint(1, 4)
+        self.y_velocity = randint(1, 5)
+    
+    def update(self):
+        self.rect = self.rect.move(0, self.x_velocity)
+
 ##### MICROGAME CLASS ##########################################################
 
 # TODO: rename this class to your game's name...
@@ -104,6 +115,9 @@ class SpaceGame(Microgame):
         self.planet = Planet()
         self.sprites = Group(self.bg, self.planet, self.spaceship)
 
+    def generate_asteroid():
+        sprites.add(Asteroid(-10, randint(0, locals.HEIGHT - 300)))
+
     def start(self):
         # TODO: Startup code here
         pass
@@ -115,6 +129,8 @@ class SpaceGame(Microgame):
     def update(self, events):
         # TODO: Update code here
         self.sprites.update()
+
+        generate_asteroid()
 
         #Check if spaceship hits sides of screen 
         x_ship_left, _ = self.spaceship.rect.bottomleft
