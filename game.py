@@ -21,20 +21,23 @@ from microgame import Microgame
 
 def make_game():
     # TODO: Return a new instance of your Microgame class.
-    return Space()
+    #raise NotImplementedError("make_game")
+    return SpaceGame()
 
 def title():
     # TODO: Return the title of the game.
-    return 'Space!!!'
+    #raise NotImplementedError("title")
+    return "Space!!!"
 
 def thumbnail():
     # TODO: Return a (relative path) to the thumbnail image file for your game.
-    return join('games','SPACE','images', 'thumbnail.png')
+    #raise NotImplementedError("thumbnail")
+    return join("games","space","images","thumbnail.png")
 
 def hint():
     # TODO: Return the hint string for your game.
-    return 'Fly your ship to the planet'
-
+    #raise NotImplementedError("hint")
+    return "Fly the spaceship to the planet"
 ################################################################################
 
 def _load_image(name, x, y):
@@ -57,29 +60,27 @@ def _load_image(name, x, y):
 ##### MODEL CLASSES ############################################################
 
 # TODO: put your Sprite classes here
-X_VELOCITY = 0
+VELOCITY_INC = 15
 
-class SpaceShip(Sprite):
+class SpaceshipSprite(Sprite):
     def __init__(self):
         Sprite.__init__(self)
-        shipPath =  join('games','SPACE', 'images', 'ship.png')
-        self.image, self.rect = _load_image(shipPath, 300, 300)
+        shippath = join("games","space","images","spaceship.png")
+        self.image, self.rect = _load_image(shippath, 400 , 600)
+        self.x_velocity = 0
 
-    def _update_velocity(self):
-        pass
+    def update(self):
+        self.rect.x += self.x_velocity
 
-class Background(Sprite):
-    def __init__(self):
-        Sprite.__init__(self)
-        shipPath =  join('games','SPACE', 'images', 'ship.png')
-        self.image, self.rect = _load_image(shipPath, 300, 300)
 ##### MICROGAME CLASS ##########################################################
 
 # TODO: rename this class to your game's name...
-class Space(Microgame):
+class SpaceGame(Microgame):
     def __init__(self):
         Microgame.__init__(self)
         # TODO: Initialization code here
+        self.spaceship = SpaceshipSprite()
+        self.sprites = Group(self.spaceship)
 
     def start(self):
         # TODO: Startup code here
@@ -91,12 +92,33 @@ class Space(Microgame):
 
     def update(self, events):
         # TODO: Update code here
-        pass
+        self.sprites.update()
+
+        #Check for hit of sides of screen 
+        x_ship_left, _ = self.spaceship.rect.bottomleft
+        x_ship_right, _ = self.spaceship.rect.bottomright
+        if x_ship_left <= 0:
+            self.spaceship.x_velocity = 0
+        elif x_ship_right >= 1024:
+            self.spaceship.x_velocity = 0   
+
+        #Process user input
+        for event in events:
+            if event.type == KEYDOWN and event.key == K_LEFT:
+                self.spaceship.x_velocity -= VELOCITY_INC
+            elif event.type == KEYUP and event.key == K_LEFT:
+                self.spaceship.x_velocity = 0
+            elif event.type == KEYDOWN and event.key == K_RIGHT:
+                self.spaceship.x_velocity += VELOCITY_INC
+            elif event.type == KEYUP and event.key == K_RIGHT:
+                self.spaceship.x_velocity = 0
 
     def render(self, surface):
         # TODO: Rendering code here
-        pass
+        surface.fill(Color(0, 0, 0))
+        self.sprites.draw(surface)
 
     def get_timelimit(self):
         # TODO: Return the time limit of this game (in seconds, 0 <= s <= 15)
-        raise NotImplementedError("get_timelimit")
+        #raise NotImplementedError("get_timelimit")
+        return 15
