@@ -68,9 +68,11 @@ class Spaceship(Sprite):
         shippath = join("games","space","images","spaceship.png")
         self.image, self.rect = _load_image(shippath, 400 , 600)
         self.x_velocity = 0
+        self.y_velocity = 0
 
     def update(self):
         self.rect.x += self.x_velocity
+        self.rect.y += self.y_velocity
 
 BG_VELOCITY = 3
 class Background(Sprite):
@@ -97,11 +99,11 @@ class Asteroid(Sprite):
         Sprite.__init__(self)
         astPath =  join('games','space', 'images', 'asteroid.png')
         self.image, self.rect = _load_image(astPath, x, y)
-        self.x_velocity = randint(1, 4)
-        self.y_velocity = randint(1, 5)
+        self.x_velocity = randint(6, 20)
+        self.y_velocity = randint(6, 15)
     
     def update(self):
-        self.rect = self.rect.move(0, self.x_velocity)
+        self.rect = self.rect.move(self.y_velocity, self.x_velocity)
 
 ##### MICROGAME CLASS ##########################################################
 
@@ -110,13 +112,18 @@ class SpaceGame(Microgame):
     def __init__(self):
         Microgame.__init__(self)
         # TODO: Initialization code here
+        self.count = 0
         self.spaceship = Spaceship()
         self.bg = Background()
         self.planet = Planet()
         self.sprites = Group(self.bg, self.planet, self.spaceship)
 
-    def generate_asteroid():
-        sprites.add(Asteroid(-10, randint(0, locals.HEIGHT - 300)))
+    def generate_asteroid(self):
+        if self.count == 10:
+            self.sprites.add(Asteroid(-10, randint(0, locals.HEIGHT - 400)))
+            self.count = 0
+        else:
+            self.count += 1
 
     def start(self):
         # TODO: Startup code here
@@ -129,16 +136,23 @@ class SpaceGame(Microgame):
     def update(self, events):
         # TODO: Update code here
         self.sprites.update()
-
-        generate_asteroid()
+        
+        self.generate_asteroid()
 
         #Check if spaceship hits sides of screen 
         x_ship_left, _ = self.spaceship.rect.bottomleft
         x_ship_right, _ = self.spaceship.rect.bottomright
         if x_ship_left <= 0:
             self.spaceship.x_velocity = 0
-        elif x_ship_right >= 1010:
+        elif x_ship_right >= locals.WIDTH - 14:
             self.spaceship.x_velocity = 0   
+
+        _, y_ship_top = self.spaceship.rect.topleft
+        _, y_ship_bottom = self.spaceship.rect.bottomleft
+        if y_ship_top <= locals.HEIGHT - 350:
+            self.spaceship.y_velocity = 0
+        elif y_ship_bottom >= locals.HEIGHT - 20:
+            self.spaceship.y_velocity = 0
 
         #Process user input
         for event in events:
@@ -150,12 +164,26 @@ class SpaceGame(Microgame):
             elif event.type == KEYUP and event.key == K_LEFT:
                 self.spaceship.x_velocity = 0
             elif event.type == KEYDOWN and event.key == K_RIGHT:
-                if x_ship_right >= 1010:
+                if x_ship_right >= locals.WIDTH - 14:
                     pass
                 else:
                     self.spaceship.x_velocity += VELOCITY_INC
             elif event.type == KEYUP and event.key == K_RIGHT:
                 self.spaceship.x_velocity = 0
+            elif event.type == KEYDOWN and event.key == K_UP:
+                if y_ship_top <= locals.HEIGHT - 350:
+                    pass
+                else:
+                    self.spaceship.y_velocity -= VELOCITY_INC
+            elif event.type == KEYUP and event.key == K_UP:
+                self.spaceship.y_velocity = 0
+            elif event.type == KEYDOWN and event.key == K_DOWN:
+                if y_ship_bottom >= locals.HEIGHT - 20:
+                    pass
+                else:
+                    self.spaceship.y_velocity += VELOCITY_INC
+            elif event.type == KEYUP and event.key == K_DOWN:
+                self.spaceship.y_velocity = 0
 
         #Make win when spaceship hits planet
         _, y_ship_top = self.spaceship.rect.topleft 
