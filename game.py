@@ -89,7 +89,7 @@ class Planet(Sprite):
     def __init__(self):
         Sprite.__init__(self)
         planetpath = join("games","space","images","planet.png")
-        self.image, self.rect = _load_image(planetpath, 335, -350)
+        self.image, self.rect = _load_image(planetpath, 335, -450)
 
     def update(self):
         self.rect = self.rect.move(0, BG_VELOCITY)
@@ -137,7 +137,7 @@ class SpaceGame(Microgame):
         # TODO: Update code here
         self.sprites.update()
         
-        self.generate_asteroid()
+        #self.generate_asteroid()
 
         #Check if spaceship hits sides of screen 
         x_ship_left, _ = self.spaceship.rect.bottomleft
@@ -147,6 +147,7 @@ class SpaceGame(Microgame):
         elif x_ship_right >= locals.WIDTH - 14:
             self.spaceship.x_velocity = 0   
 
+        #Check if spaceship hits top/bottom of screen sectioned to movement
         _, y_ship_top = self.spaceship.rect.topleft
         _, y_ship_bottom = self.spaceship.rect.bottomleft
         if y_ship_top <= locals.HEIGHT - 350:
@@ -186,9 +187,7 @@ class SpaceGame(Microgame):
                 self.spaceship.y_velocity = 0
 
         #Make win when spaceship hits planet
-        _, y_ship_top = self.spaceship.rect.topleft 
-        _, y_planet_bottom = self.planet.rect.bottomleft
-        if y_ship_top == y_planet_bottom:
+        if self.planet.rect.colliderect(self.spaceship.rect):
             self.win()
 
     def render(self, surface):
