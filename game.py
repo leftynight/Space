@@ -104,6 +104,8 @@ class Asteroid(Sprite):
     
     def update(self):
         self.rect = self.rect.move(self.y_velocity, self.x_velocity)
+        if self.rect.colliderect(spaceship.rect):
+            self.lose()
 
 ##### MICROGAME CLASS ##########################################################
 
