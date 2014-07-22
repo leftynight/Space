@@ -62,7 +62,7 @@ def _load_image(name, x, y):
 # TODO: put your Sprite classes here
 VELOCITY_INC = 15
 
-class SpaceshipSprite(Sprite):
+class Spaceship(Sprite):
     def __init__(self):
         Sprite.__init__(self)
         shippath = join("games","space","images","spaceship.png")
@@ -72,13 +72,23 @@ class SpaceshipSprite(Sprite):
     def update(self):
         self.rect.x += self.x_velocity
 
-BG_VELOCITY = 2
+BG_VELOCITY = 3
 class Background(Sprite):
     def __init__(self):
         Sprite.__init__(self)
         bgPath =  join('games','space', 'images', 'space.png')
         self.image, self.rect = _load_image(bgPath, 0, -1152)
     
+    def update(self):
+        self.rect = self.rect.move(0, BG_VELOCITY)
+
+
+class Planet(Sprite):
+    def __init__(self):
+        Sprite.__init__(self)
+        planetpath = join("games","space","images","planet.png")
+        self.image, self.rect = _load_image(planetpath, 335, -350)
+
     def update(self):
         self.rect = self.rect.move(0, BG_VELOCITY)
 
@@ -89,9 +99,10 @@ class SpaceGame(Microgame):
     def __init__(self):
         Microgame.__init__(self)
         # TODO: Initialization code here
-        self.spaceship = SpaceshipSprite()
+        self.spaceship = Spaceship()
         self.bg = Background()
-        self.sprites = Group(self.bg, self.spaceship)
+        self.planet = Planet()
+        self.sprites = Group(self.bg, self.planet, self.spaceship)
 
     def start(self):
         # TODO: Startup code here
@@ -105,7 +116,7 @@ class SpaceGame(Microgame):
         # TODO: Update code here
         self.sprites.update()
 
-        #Check for hit of sides of screen 
+        #Check if spaceship hits sides of screen 
         x_ship_left, _ = self.spaceship.rect.bottomleft
         x_ship_right, _ = self.spaceship.rect.bottomright
         if x_ship_left <= 0:
@@ -129,6 +140,12 @@ class SpaceGame(Microgame):
                     self.spaceship.x_velocity += VELOCITY_INC
             elif event.type == KEYUP and event.key == K_RIGHT:
                 self.spaceship.x_velocity = 0
+
+        #Make win when spaceship hits planet
+        _, y_ship_top = self.spaceship.rect.topleft 
+        _, y_planet_bottom = self.planet.rect.bottomleft
+        if y_ship_top == y_planet_bottom:
+            self.win()
 
     def render(self, surface):
         # TODO: Rendering code here
