@@ -71,6 +71,17 @@ class SpaceshipSprite(Sprite):
 
     def update(self):
         self.rect.x += self.x_velocity
+        
+BG_VELOCITY = 1
+class Background(Sprite):
+    def __init__(self):
+        Sprite.__init__(self)
+        bgPath =  join('games','space', 'images', 'space.png')
+        self.image, self.rect = _load_image(bgPath, 0, 0)
+        self.rect  = self.image.get_rect()
+
+    def update(self):
+        self.rect = self.rect.move(0, BG_VELOCITY)
 
 ##### MICROGAME CLASS ##########################################################
 
@@ -80,7 +91,8 @@ class SpaceGame(Microgame):
         Microgame.__init__(self)
         # TODO: Initialization code here
         self.spaceship = SpaceshipSprite()
-        self.sprites = Group(self.spaceship)
+        self.bg = Background()
+        self.sprites = Group(self.spaceship, self.bg())
 
     def start(self):
         # TODO: Startup code here
