@@ -89,7 +89,7 @@ class Planet(Sprite):
     def __init__(self):
         Sprite.__init__(self)
         planetpath = join("games","space","images","planet.png")
-        self.image, self.rect = _load_image(planetpath, 335, -450)
+        self.image, self.rect = _load_image(planetpath, 335, -550)
 
     def update(self):
         self.rect = self.rect.move(0, BG_VELOCITY)
@@ -159,7 +159,7 @@ class SpaceGame(Microgame):
         #Check if spaceship hits top/bottom of screen sectioned to movement
         _, y_ship_top = self.spaceship.rect.topleft
         _, y_ship_bottom = self.spaceship.rect.bottomleft
-        if y_ship_top <= locals.HEIGHT - 350:
+        if y_ship_top <= locals.HEIGHT - 300:
             self.spaceship.y_velocity = 0
         elif y_ship_bottom >= locals.HEIGHT - 20:
             self.spaceship.y_velocity = 0
@@ -177,7 +177,7 @@ class SpaceGame(Microgame):
             elif event.type == KEYUP and event.key == K_RIGHT:
                 self.spaceship.x_velocity = 0
             elif event.type == KEYDOWN and event.key == K_UP:
-                if y_ship_top > locals.HEIGHT - 350:
+                if y_ship_top > locals.HEIGHT - 300:
                     self.spaceship.y_velocity -= VELOCITY_INC
             elif event.type == KEYUP and event.key == K_UP:
                 self.spaceship.y_velocity = 0
