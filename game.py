@@ -6,6 +6,7 @@ from pygame.locals import *
 from pygame.mixer import music
 from pygame.rect import Rect
 from pygame.sprite import Group, Sprite
+import pygame.time
 
 # Path imports
 from os.path import join
@@ -38,6 +39,7 @@ def hint():
     # TODO: Return the hint string for your game.
     #raise NotImplementedError("hint")
     return "Navigate to the planet!"
+
 ################################################################################
 
 def _load_image(name, x, y):
@@ -105,6 +107,18 @@ class Asteroid(Sprite):
     def update(self):
         self.rect = self.rect.move(self.y_velocity, self.x_velocity)
 
+class Monster(Sprite):
+    def __init__(self):
+        Sprite.__init__(self)
+        monsterpath = join("games","space","images","monster.png")
+        self.image, self.rect = _load_image(monsterpath, (locals.WIDTH / 2) - 257, (locals.HEIGHT / 2) - 257)
+
+class EarthExp(Sprite):
+    def __init__(self):
+        Sprite.__init__(self)
+        earthpath = join("games","space","images","earthexp.png")
+        self.image, self.rect = _load_image(earthpath, (locals.WIDTH / 2) - 250, (locals.HEIGHT / 2) - 200)
+
 ##### MICROGAME CLASS ##########################################################
 
 # TODO: rename this class to your game's name...
@@ -115,9 +129,13 @@ class SpaceGame(Microgame):
         self.count = 0
         self.spaceship = Spaceship()
         self.bg = Background()
-        self.planet = Planet()
+        self.planet = Planet() 
+        self.monster = Group(Monster())
+        self.earth = Group(EarthExp())
         self.background = Group(self.bg)
         self.sprites = Group(self.planet, self.spaceship)
+        self.is_win = False
+        self.is_lose = False
 
     def generate_asteroid(self):
         if self.count == 10:
@@ -131,14 +149,12 @@ class SpaceGame(Microgame):
 
     def start(self):
         # TODO: Startup code here
-        #music.load(join("games","space","music","space_song.wav"))
-        #music.play()
-        pass
+        music.load(join("games","space","music","space_song.ogg"))
+        music.play()
 
     def stop(self):
         # TODO: Clean-up code here
-        #music.stop()
-        pass
+        music.stop()
 
     def update(self, events):
         # TODO: Update code here
@@ -191,12 +207,28 @@ class SpaceGame(Microgame):
 
         #Make win when spaceship hits planet
         if self.planet.rect.colliderect(self.spaceship.rect):
-            self.win()
+            sound_planet = pygame.mixer.Sound(join("games","space","music","Powerup.wav"))
+            sound_planet.play()
+            self.is_win = True
 
         for each in self.sprites.sprites():
             if isinstance(each, Asteroid):
                 if each.rect.colliderect(self.spaceship.rect):
-                    self.lose()
+                    sound_asteroid = pygame.mixer.Sound(join("games","space","music","Explosion.wav"))
+                    sound_asteroid.play()
+                    self.is_lose = True
+
+        #Creates win scree
+        if self.is_win:
+            self.sprites.empty()
+            self.background.empty()
+            self.sprites.add(Monster())
+      
+        #Creates lose screen
+        elif self.is_lose:
+            self.sprites.empty()
+            self.background.empty()
+            self.sprites.add(EarthExp())
 
     def render(self, surface):
         # TODO: Rendering code here
