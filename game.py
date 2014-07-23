@@ -144,8 +144,6 @@ class SpaceGame(Microgame):
         # TODO: Update code here
         self.background.update()
         self.sprites.update()
-
-        print self.spaceship.rect.x, self.spaceship.rect.y
         
         #Make asteroids
         self.generate_asteroid()
@@ -169,30 +167,22 @@ class SpaceGame(Microgame):
         #Process user input
         for event in events:
             if event.type == KEYDOWN and event.key == K_LEFT:
-                if x_ship_left <= 0:
-                    pass
-                else:
+                if x_ship_left > 0:
                     self.spaceship.x_velocity -= VELOCITY_INC
             elif event.type == KEYUP and event.key == K_LEFT:
                 self.spaceship.x_velocity = 0
             elif event.type == KEYDOWN and event.key == K_RIGHT:
-                if x_ship_right >= locals.WIDTH - 14:
-                    pass
-                else:
+                if x_ship_right < locals.WIDTH - 14:
                     self.spaceship.x_velocity += VELOCITY_INC
             elif event.type == KEYUP and event.key == K_RIGHT:
                 self.spaceship.x_velocity = 0
             elif event.type == KEYDOWN and event.key == K_UP:
-                if y_ship_top <= locals.HEIGHT - 350:
-                    pass
-                else:
+                if y_ship_top > locals.HEIGHT - 350:
                     self.spaceship.y_velocity -= VELOCITY_INC
             elif event.type == KEYUP and event.key == K_UP:
                 self.spaceship.y_velocity = 0
             elif event.type == KEYDOWN and event.key == K_DOWN:
-                if y_ship_bottom >= locals.HEIGHT - 20:
-                    pass
-                else:
+                if y_ship_bottom < locals.HEIGHT - 20:
                     self.spaceship.y_velocity += VELOCITY_INC
             elif event.type == KEYUP and event.key == K_DOWN:
                 self.spaceship.y_velocity = 0
