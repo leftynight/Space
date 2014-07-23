@@ -116,7 +116,8 @@ class SpaceGame(Microgame):
         self.spaceship = Spaceship()
         self.bg = Background()
         self.planet = Planet()
-        self.sprites = Group(self.bg, self.planet, self.spaceship)
+        self.background = Group(self.bg)
+        self.sprites = Group(self.planet, self.spaceship)
 
     def generate_asteroid(self):
         if self.count == 10:
@@ -141,7 +142,10 @@ class SpaceGame(Microgame):
 
     def update(self, events):
         # TODO: Update code here
+        self.background.update()
         self.sprites.update()
+
+        print self.spaceship.rect.x, self.spaceship.rect.y
         
         #Make asteroids
         self.generate_asteroid()
@@ -207,6 +211,7 @@ class SpaceGame(Microgame):
     def render(self, surface):
         # TODO: Rendering code here
         surface.fill(Color(0, 0, 0))
+        self.background.draw(surface)
         self.sprites.draw(surface)
 
     def get_timelimit(self):
